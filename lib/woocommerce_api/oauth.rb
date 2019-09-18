@@ -37,7 +37,7 @@ module WooCommerce
       nonce_lifetime = 15 * 60 # Woocommerce keeps nonces for 15 minutes
 
       params["oauth_consumer_key"] = @consumer_key
-      params["oauth_nonce"] = Digest::SHA1.hexdigest((Time.new.to_f % nonce_lifetime + (Process.pid * nonce_lifetime)).to_s)
+      params["oauth_nonce"] = Digest::SHA1.hexdigest((Time.new.to_f % nonce_lifetime + (process_pid * nonce_lifetime)).to_s)
       params["oauth_signature_method"] = @signature_method
       params["oauth_timestamp"] = Time.new.to_i
       params["oauth_signature"] = CGI::escape(generate_oauth_signature(params, url))
@@ -48,6 +48,10 @@ module WooCommerce
     end
 
     protected
+
+    def process_pid
+      Process.pid
+    end
 
     # Internal: Generate the OAuth Signature
     #
